@@ -1,0 +1,134 @@
+public class ATM {
+    private double Balance;
+    private double DepositAmt;
+    private double WithdrawAmt;
+
+    //default constructor
+    public ATM() {
+    }
+
+    //getter setter
+    public double GetBalance() {
+        return Balance;
+    }
+
+    public void setBalance(double balance) {
+        Balance = balance;
+    }
+
+    public double getDepositAmt() {
+        return DepositAmt;
+    }
+
+    public void setDepositAmt(double depositAmt) {
+        DepositAmt = depositAmt;
+    }
+
+    public double getWithdrawAmt() {
+        return WithdrawAmt;
+    }
+
+    public void setWithdrawAmt(double withdrawAmt) {
+        WithdrawAmt = withdrawAmt;
+    }
+}
+
+public interface ATMOperationInterface {
+    public void ViewBalance();
+
+    public void WithdrawAmt(double WithdrawAmt);
+
+    public void DepositAmt(double DepositAmt);
+
+    public void ViewMiniStatement();
+}
+import java.util.HashMap;
+import java.util.Map;
+
+public class ATMOperationImplementation implements ATMOperationInterface {
+    ATM atm = new ATM();
+    Map<Double, String> ministat = new HashMap<>();
+
+    @Override
+    public void ViewBalance() {
+        System.out.println("Available Balance is : " + atm.GetBalance());
+    }
+
+    @Override
+    public void WithdrawAmt(double WithdrawAmt) {
+        if (WithdrawAmt % 500 == 0) {
+            if (WithdrawAmt <= atm.GetBalance()) {
+                ministat.put(WithdrawAmt, " Amount Withdrawn");
+                System.out.println("Collect the cash " + WithdrawAmt);
+                atm.setBalance(atm.GetBalance() - WithdrawAmt);
+                ViewBalance();
+            } else {
+                System.out.println("Insufficient Balance!!!");
+            }
+        } else {
+            System.out.println("Please enter the amount in multiple of 500");
+        }
+    }
+
+    @Override
+    public void DepositAmt(double DepositAmt) {
+        ministat.put(DepositAmt, " Amount Deposited");
+        System.out.println(DepositAmt + " Deposited Successfully!!");
+        atm.setBalance(atm.GetBalance() + DepositAmt);
+        ViewBalance();
+    }
+
+    @Override
+    public void ViewMiniStatement() {
+        for (Map.Entry<Double, String> m : ministat.entrySet()) {
+            System.out.println(m.getKey() + "" + m.getValue());
+        }
+    }
+}
+import java.util.Scanner;
+
+public class MainClass {
+    public static void main(String[] args) {
+        ATMOperationInterface op = new ATMOperationImplementation();
+        int ATM_Number = 12345;
+        int ATM_Pin = 123;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Welcome to ATM Machine :) ");
+        System.out.print("Enter ATM number : ");
+        int ATM_number = sc.nextInt();
+        System.out.print("Enter Pin : ");
+        int PIN = sc.nextInt();
+        if ((ATM_Number == ATM_number) && (ATM_Pin == PIN)) {
+            while (true) {
+                System.out.println("1. View Available Balance\n2. Withdraw Amount\n3.Deposit Amount\n4. View the Mini Statement\n5. Exit");
+                System.out.println("Enter the choice : ");
+                int ch = sc.nextInt();
+                if (ch == 1) {
+                    op.ViewBalance();
+
+                } else if (ch == 2) {
+                    System.out.println("Enter the amount to withdraw : ");
+                    double WithdrawAmt = sc.nextDouble();
+                    op.WithdrawAmt(WithdrawAmt);
+
+                } else if (ch == 3) {
+                    System.out.println("Enter the amount to be deposited : ");
+                    double DepositAmt = sc.nextDouble();
+                    op.DepositAmt(DepositAmt);
+
+                } else if (ch == 4) {
+                    op.ViewMiniStatement();
+                } else if (ch == 5) {
+                    System.out.println("Collect your card!!!\nThank You for using ATM Services :) ");
+                    System.exit(0);
+                } else {
+                    System.out.println("Select correct option..");
+                }
+            }
+
+        } else {
+            System.out.println("Incorrect Entries!!!");
+            System.exit(0);
+        }
+    }
+}
